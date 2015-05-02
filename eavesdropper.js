@@ -21,7 +21,7 @@
     // called when $.fn.on is "intercepted." Stores event listeners as data on elements, where the
     // data is an array of objects with `type` and `listener` properties.
     function addListener(types, selector, data, fn, /*INTERNAL*/ one) {
-        var type, listeners;
+        var type, splitTypes, listeners;
         var listener = getFnArgument.apply(null, arguments);
 
         // This prevents listeners from being added twice when "types" is an object; jQuery's
@@ -42,11 +42,15 @@
                 listenersAdded = true;
             }
         } else {
+            splitTypes = types.trim().split(/\s+/g);
             this.data('listeners', this.data('listeners') || []);
-            this.data('listeners').push({
-                type: types,
-                listener: listener
-            });
+
+            $.each(splitTypes, function(idx, type) {
+                this.data('listeners').push({
+                    type: type,
+                    listener: listener
+                });
+            }.bind(this));
         }
     }
 
