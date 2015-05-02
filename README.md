@@ -21,3 +21,20 @@ jQuery object, just:
 // executed previously.
 $('.myclass').eavesdrop(); // => { listener: function() {}, type: 'click' }
 ```
+
+### Additional Examples
+
+The examples that follow assume that `var div = $('div')`.
+
+```javascript
+div.on({
+    'clicker': function() { console.log('Clicker!'); },
+    'click.button.one': function() { console.log('Click button one!'); },
+    'click.button.two': function() { console.log('Click button two!'); },
+    'click': function() { console.log('...click.'); }
+});
+div.eavesdrop(); // => [{type: "clicker", listener: function() { console.log('Clicker!'); }}, ...]
+
+div.off('     click.button    clicker'); // extra spacing just to show that eavesdropper deals with it
+div.eavesdrop(); // => [{type: "click", listener: function() { console.log('...click.'); }}]
+```
