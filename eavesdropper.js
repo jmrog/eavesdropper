@@ -54,7 +54,7 @@
     // At the moment, it only works when `off` is called with the specific string that was used to
     // specify the event type when the listener was added.
     function removeListener(types, selector, fn) {
-        var type, index;
+        var type, filteredListeners;
         var listener = getFnArgument.apply(null, arguments);
 
         if (this.data('listeners') && this.data('listeners').length) {
@@ -64,16 +64,10 @@
                     removeListener.call(this, type, selector, types[type]);
                 }
             } else {
-                $.each(this.data('listeners'), function(idx, listener) {
-                    // TODO: This is very brutish right now, since this is a proof of concept.
-                    // We'll eventually need to allow removing only a specific listener.
-                    if (listener.type === types) {
-                        index = idx;
-                    }
-                });
-                if (typeof index !== "undefined") {
-                    this.data('listeners').splice(index, 1);
-                }
+                filteredListeners = $.grep(this.data('listeners'), function(listener) {
+                    return listener.type === types;
+                }, true);
+                this.data('listeners', filteredListeners);
             }
         }
     }
