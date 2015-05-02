@@ -41,8 +41,8 @@
                 addListener.call(this, type, selector, data, types[type], one);
                 listenersAdded = true;
             }
-        } else if (this.length){
-            splitTypes = types.trim().split(/\s+/g);
+        } else if (this.length && typeof types === "string") {
+            splitTypes = types.trim().split(/\s+/g); //handles multiple whitespace-delimited types
             this.data('listeners', this.data('listeners') || []);
 
             $.each(splitTypes, function(idx, type) {
@@ -55,11 +55,39 @@
     }
 
     // implements a farily simple way to stop tracking listeners that are removed with $.fn.off.
-    // At the moment, it only works when the listener is removed by its exact string type (or when
-    // it is removed as a result of calling `$.fn.off` with no arguments.
     function removeListener(types, selector, fn) {
-        var type, filteredListeners;
+        var type, splitTypes, filteredListeners;
         if (arguments.length === 0) return this.data('listeners', []);
+
+        // A utility function for checking for matches between types even when there are a number
+        // of namespaces involved. Used below.
+        function isMatch(type, listener) {
+            var doesMatch = true;
+            var nsTypes = $.grep(type.split('.'), function(nsType) {
+                return nsType.length > 0; // ignore empty strings
+            });
+            var nsListenerTypes = $.grep(listener.type.split('.'), function(nsListenerType) {
+                return nsListenerType.length > 0;
+            });
+            var nsTypesLen = nsTypes.length;
+
+            // The removed listener cannot be this specific listener if the removed type
+            // has more namespaces than the listener's type
+            if (nsTypesLen > nsListenerTypes.length) {
+                return false;
+            }
+
+            // Iterate through the namespaces in the removed type of event, comparing them
+            // to those in the current stored listener's type. If there is a failure to
+            // match, break the loop -- we know there's not a match. On the other hand,
+            // if we make it all the way through this loop, everything matches.
+            $.each(nsTypes, function(idx, nsType) {
+                doesMatch = nsType === nsListenerTypes[idx];
+                return doesMatch;
+            });
+
+            return doesMatch;
+        }
 
         if (this.data('listeners') && this.data('listeners').length) {
             // As with `addListener`, `types` can be either a string or an object
@@ -68,10 +96,13 @@
                     removeListener.call(this, type, selector, types[type]);
                 }
             } else {
-                filteredListeners = $.grep(this.data('listeners'), function(listener) {
-                    return listener.type === types;
-                }, true);
-                this.data('listeners', filteredListeners);
+                splitTypes = types.trim().split(/\s+/g); //handles multiple whitespace-delimited types
+                $.each(splitTypes, function(idx, type) {
+                    // filter out the stored types that match the removed type
+                    this.data('listeners', $.grep(this.data('listeners'), function(listener) {
+                        return isMatch(type, listener);
+                    }, true));
+                }.bind(this));
             }
         }
     }
