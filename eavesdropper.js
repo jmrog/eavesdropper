@@ -41,7 +41,7 @@
                 addListener.call(this, type, selector, data, types[type], one);
                 listenersAdded = true;
             }
-        } else {
+        } else if (this.length){
             splitTypes = types.trim().split(/\s+/g);
             this.data('listeners', this.data('listeners') || []);
 
