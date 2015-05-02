@@ -55,7 +55,7 @@
     // specify the event type when the listener was added.
     function removeListener(types, selector, fn) {
         var type, filteredListeners;
-        var listener = getFnArgument.apply(null, arguments);
+        if (arguments.length === 0) return this.data('listeners', []);
 
         if (this.data('listeners') && this.data('listeners').length) {
             // As with `addListener`, `types` can be either a string or an object
@@ -75,7 +75,7 @@
     // This is the method you call on a jQuery collection to get a list of all listeners set on the
     // collection, as in: $('.thatClass').eavesdrop()
     $.fn.eavesdrop = function() {
-        return this.data('listeners');
+        return this.data('listeners') || [];
     }
 
     // Wrappers
