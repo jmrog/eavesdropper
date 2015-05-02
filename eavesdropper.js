@@ -54,9 +54,9 @@
         }
     }
 
-    // implements a very simplistic way to stop tracking listeners that are removed with $.fn.off.
-    // At the moment, it only works when `off` is called with the specific string that was used to
-    // specify the event type when the listener was added.
+    // implements a farily simple way to stop tracking listeners that are removed with $.fn.off.
+    // At the moment, it only works when the listener is removed by its exact string type (or when
+    // it is removed as a result of calling `$.fn.off` with no arguments.
     function removeListener(types, selector, fn) {
         var type, filteredListeners;
         if (arguments.length === 0) return this.data('listeners', []);
