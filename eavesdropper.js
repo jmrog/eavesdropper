@@ -81,10 +81,10 @@
     // Wrappers
     $.fn.on = function(types, selector, data, fn, /*INTERNAL*/ one) {
         addListener.apply(this, arguments);
-        jqOn.apply(this, arguments);
+        return jqOn.apply(this, arguments);
     };
     $.fn.off = function(types, selector, fn) {
         removeListener.apply(this, arguments);
-        jqOff.apply(this, arguments);
+        return jqOff.apply(this, arguments);
     };
 })(jQuery);
