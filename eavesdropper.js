@@ -24,33 +24,28 @@
         var type, splitTypes, listeners;
         var listener = getFnArgument.apply(null, arguments);
 
-        // This prevents listeners from being added twice when "types" is an object; jQuery's
-        // native `on` is called recursively in those circumstances.
-        if (listenersAdded === true) {
-            return listenersAdded = false;
-        }
-
-        // `types` can be either a string or an object
-        // The `if` part of the conditional is inspired by the jQuery implementation of $.fn.on
+        // `types` can be either a string or an object; handling only the string case works, since
+        // jQuery's `.on` takes care of the rest
         if (typeof types === "object") {
-            if (typeof selector !== "string") {
-                data = data || selector;
-                selector = undefined;
-            }
-            for (type in types) {
-                addListener.call(this, type, selector, data, types[type], one);
-                listenersAdded = true;
-            }
+            return false;
         } else if (this.length && typeof types === "string") {
             splitTypes = types.trim().split(/\s+/g); //handles multiple whitespace-delimited types
-            this.data('listeners', this.data('listeners') || []);
 
-            $.each(splitTypes, function(idx, type) {
-                this.data('listeners').push({
-                    type: type,
-                    listener: listener
-                });
-            }.bind(this));
+            this.each(function() {
+                var el = $(this);
+                // FIX: We cannot simply set listeners like this: el.data('listeners', el.data('listeners') || [])
+                // because this causes listeners for different elements to occasionally be set to the same array
+                var listeners = typeof el.data('listeners') === "undefined" ||
+                                el.data('listeners').length === 0 ? [] : el.data('listeners');
+                el.data('listeners', listeners);
+
+                $.each(splitTypes, function(idx, type) {
+                    this.data('listeners').push({
+                        type: type,
+                        listener: listener
+                    });
+                }.bind(el));
+            });
         }
     }
 
@@ -90,11 +85,10 @@
         }
 
         if (this.data('listeners') && this.data('listeners').length) {
-            // As with `addListener`, `types` can be either a string or an object
+            // As with `addListener`, `types` can be either a string or an object. Again, we let
+            // jQuery handle the object case
             if (typeof types === "object") {
-                for (type in types) {
-                    removeListener.call(this, type, selector, types[type]);
-                }
+                return false;
             } else {
                 splitTypes = types.trim().split(/\s+/g); //handles multiple whitespace-delimited types
                 $.each(splitTypes, function(idx, type) {
@@ -111,7 +105,7 @@
     // collection, as in: $('.thatClass').eavesdrop()
     $.fn.eavesdrop = function() {
         return this.data('listeners') || [];
-    }
+    };
 
     // Wrappers
     $.fn.on = function(types, selector, data, fn, /*INTERNAL*/ one) {
