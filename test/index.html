@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eavesdropper.js Unit Tests</title>
+
+    <!-- Mocha CSS -->
+    <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+</head>
+<body>
+    <div id="mocha"></div> <!-- div for Mocha results -->
+
+    <!-- HTML that should be present for each test goes here -->
+    <div id="testdiv" class="whatever">
+        <p><span class="whatever">This</span> is a div with some elements that can be used in unit tests.</p>
+    </div>
+
+    <!-- Testing Libraries JS -->
+    <script src="../node_modules/mocha/mocha.js"></script>
+    <script>mocha.setup('bdd')</script>
+    <script src="../node_modules/chai/chai.js"></script>
+
+    <!-- Mediocre (but apparently sufficient for present purposes) `bind` shim so that the tests work.
+         PhantomJS 1.9 doesn't support `bind`. -->
+    <script>
+        Function.prototype.bind = Function.prototype.bind || function(thisArg) {
+            var fn = this;
+            return function() {
+                return fn.apply(thisArg, arguments);
+            }
+        };
+    </script>
+
+    <!-- Libraries required for eavesdropper -->
+    <script src="../node_modules/jquery/dist/jquery.js"></script>
+
+    <script src="../dist/eavesdropper.js"></script>
+
+    <!-- The actual tests are here -->
+    <script src="./tests.js"></script>
+
+    <!-- Test startup -->
+    <script>
+        if (window.mochaPhantomJS) {
+            mochaPhantomJS.run();
+        } else {
+            mocha.run();
+        }
+    </script>
+</body>
+</html>

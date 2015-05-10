@@ -1,0 +1,45 @@
+{
+  "name": "eavesdropper",
+  "version": "0.1.1",
+  "description": "An event listener plugin/wrapper for tracking and accessing listeners added with jQuery's `on` and `off` methods",
+  "main": "./src/eavesdropper.js",
+  "directories": {},
+  "scripts": {
+    "test": "gulp do-test",
+    "start": "gulp"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jmrog/eavesdropper.git"
+  },
+  "keywords": [
+    "events",
+    "jquery",
+    "plugin",
+    "wrapper",
+    "event",
+    "listeners",
+    "handlers",
+    "tracking"
+  ],
+  "author": "Jason Rogers <jason@ascendiv.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jmrog/eavesdropper/issues"
+  },
+  "homepage": "https://github.com/jmrog/eavesdropper",
+  "devDependencies": {
+    "chai": "^2.3.0",
+    "gulp": "^3.8.11",
+    "gulp-jshint": "^1.10.0",
+    "gulp-mocha-phantomjs": "^0.6.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-streamify": "0.0.5",
+    "gulp-uglify": "^1.2.0",
+    "jquery": "^2.1.4",
+    "mocha": "^2.2.4",
+  },
+  "dependencies": {
+    "jquery": "^2.1.4",
+  }
+}
