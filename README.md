@@ -12,6 +12,8 @@ _NOTE:_ This is in a very early stage of development, so some caution is warrant
 How to Use
 ----------
 
+### In the Browser (the Typical Use Case)
+
 Simply download the script and include it (after jQuery, or with jQuery as a
 dependency) as needed. When you want to access the event listener data for a
 jQuery object, just do this:
@@ -22,7 +24,26 @@ jQuery object, just do this:
 $('.myclass').eavesdrop(); // => { listener: function() {}, type: 'click' }
 ```
 
-### Additional Examples
+### In Node.js
+
+Eavesdropper can be used in Node.js; it is set up so that you can simply:
+
+```javascript
+var whatever = require('path/to/eavesdropper');
+```
+
+Note the odd use of "whatever" as the variable name. Since Eavesdropper wraps
+jQuery's native methods by modifying jQuery's prototype, you do not actually
+need to store the result of requiring Eavesdropper, so long as you have a
+reference to jQuery itself (and you should -- Eavesdropper *requires* jQuery).
+Eavesdropper's functionality will be available on jQuery objects.
+
+Another thing worth noting is that jQuery itself will not function in Node.js
+without a `window` object available, such as one supplied by `jsdom`. Since
+Eavesdropper requires jQuery functionality, it also will not function without
+such an object.
+
+### A Few Additional Usage Examples
 
 The examples that follow assume that `var div = $('div')`.
 
@@ -38,3 +59,19 @@ div.eavesdrop(); // => [{type: "clicker", listener: function() { console.log('Cl
 div.off('     click.button    clicker'); // extra spacing just to show that eavesdropper deals with it
 div.eavesdrop(); // => [{type: "click", listener: function() { console.log('...click.'); }}]
 ```
+
+Building, Testing, and Automating
+---------------------------------
+
+Eavesdropper currently uses Mocha for testing and Chai for expect-style
+assertions. For building and automation, it uses Gulp. If you download
+`package.json` and run `npm install`, you will get all of the tools you
+need. Assuming that you also download `gulpfile.js`, you can run
+`gulp make-dist` to build a minified version of Eavesdropper (also
+available here, under `dist`), `gulp do-test` to run the tests, or, to do both
+at once, `gulp build`.
+
+Simply running `gulp` will start a "watcher" task that should automatically
+rebuild and test whenever you make changes to any `.js` files under `src` or
+`test`.
+
