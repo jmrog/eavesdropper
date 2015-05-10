@@ -24,6 +24,10 @@ jQuery object, just do this:
 $('.myclass').eavesdrop(); // => { listener: function() {}, type: 'click' }
 ```
 
+Since Eavesdropper currently uses the jQuery built-in `$.fn.data` method to
+store event listener information, you can also forego the use of `.eavesdrop`
+and instead simply access `$('.myclass').data('listeners')`.
+
 ### In Node.js
 
 Eavesdropper can be used in Node.js; it is set up so that you can simply:
