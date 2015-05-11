@@ -1,5 +1,5 @@
 (function(global, $, jsdom, factory) {
-    var noWindow = typeof window === "undefined";
+    var noWindow = typeof window === "undefined",
         jQueryNeeded = false;
 
     if (typeof $ !== "function" || typeof $.fn === "undefined" || typeof $.fn.jquery !== "string") {
